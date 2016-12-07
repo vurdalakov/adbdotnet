@@ -343,6 +343,67 @@
 
         #endregion
 
+        #region File system
+
+        public void DeleteFile(String remoteFileName)
+        {
+            ExecuteRemoteCommand($"rm -f {remoteFileName}");
+        }
+
+        #endregion
+
+        #region Applications
+
+        public void InstallApplication(String localFileName, Boolean installOnSdCard)
+        {
+            // legacy install
+
+            var baseName = Path.GetFileName(localFileName);
+            var remoteFileName = installOnSdCard ? $"/sdcard/tmp/{baseName}" : $"/data/local/tmp/{baseName}";
+            var options = installOnSdCard ? "-s" : "";
+
+            if (GetFileInfo(remoteFileName).IsFile)
+            {
+                DeleteFile(remoteFileName);
+            }
+
+            UploadFile(localFileName, remoteFileName);
+
+            ExecutePm($"install {options} {remoteFileName}");
+
+            DeleteFile(remoteFileName);
+        }
+
+        public void UninstallApplication(String applicationName, Boolean keepDataAndCache = false)
+        {
+            // legacy uninstall
+
+            var options = keepDataAndCache ? "-k" : "";
+
+            ExecutePm($"uninstall {options} {applicationName}");
+        }
+
+        private void ExecutePm(String commandLine)
+        {
+            var response = ExecuteRemoteCommand($"pm {commandLine}");
+
+            if ((null == response) || (0 == response.Length))
+            {
+                throw new Exception("Wrong pm output");
+            }
+
+            var line = response[response.Length - 1];
+            if (line.Equals("Success"))
+            {
+                return;
+            }
+
+            var match = Regex.Match(line, @"\[(.+?)]");
+            throw new Exception(2 == match.Groups.Count ? match.Groups[1].Value : line);
+        }
+
+        #endregion
+
         private void SetDevice(AdbSocket adbSocket)
         {
             if (String.IsNullOrEmpty(DeviceSerialNumber))

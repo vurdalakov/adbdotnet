@@ -101,6 +101,16 @@
 
                 response = adbClient.ExecuteRemoteCommand("ls -l /mnt/sdcard/DCIM");
                 Console.WriteLine($"Result:\n{String.Join("\r\n", response)}");
+
+                Console.WriteLine();
+
+                adbClient.InstallApplication(@"C:\Temp\MP3Tube_v1.0_apkpure.com.apk", false);
+                Console.WriteLine("Application installed");
+
+                Console.WriteLine();
+
+                adbClient.UninstallApplication("angel.engmp3tube");
+                Console.WriteLine("Application uninstalled");
             }
             catch (Exception ex)
             {

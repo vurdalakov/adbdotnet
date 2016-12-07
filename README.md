@@ -150,3 +150,37 @@ adbClient.DownloadFile(fileInfo.FullName, @"C:\Temp\" + fileInfo.Name);
 ```
 adbClient.UploadFile(@"C:\Temp:\20161130_1732.jpg", "/mnt/sdcard/DCIM/Camera");
 ```
+
+#### Delete file from device
+
+```
+adbClient.DeleteFile("/sdcard/tmp/MP3Tube_v1.0_apkpure.com.apk");
+```
+
+#### Install application
+
+Install application to the internal memory:
+
+```
+adbClient.InstallApplication(@"C:\Temp\MP3Tube_v1.0_apkpure.com.apk", false);
+```
+
+Install application to the SD card:
+
+```
+adbClient.InstallApplication(@"C:\Temp\MP3Tube_v1.0_apkpure.com.apk", true);
+```
+
+#### Uninstall application
+
+Uninstall application and delete data and cache directories:
+
+```
+adbClient.UninstallApplication("angel.engmp3tube");
+```
+
+Uninstall application but keep data and cache directories:
+
+```
+adbClient.UninstallApplication("angel.engmp3tube", true);
+```
