@@ -383,6 +383,31 @@
             ExecutePm($"uninstall {options} {applicationName}");
         }
 
+        public AdbAppInfo[] GetInstalledApplications()
+        {
+            var response = ExecuteRemoteCommand($"pm list packages -f");
+
+            var apps = new List<AdbAppInfo>();
+
+            foreach (var line in response)
+            {
+                var match = Regex.Match(line, @"package:(.+?)=(.+)");
+                if (match.Groups.Count != 3)
+                {
+                    throw new Exception(line);
+                }
+
+                var fileName = match.Groups[1].Value;
+                var type = fileName.StartsWith("/system/app/") ? AdbAppType.System : (fileName.StartsWith("/system/priv-app/") ? AdbAppType.Privileged : AdbAppType.ThirdParty);
+                var location = fileName.StartsWith("/system/") || fileName.StartsWith("/data/") ? AdbAppLocation.InternalMemory : AdbAppLocation.ExternalMemory;
+
+                var app = new AdbAppInfo(match.Groups[2].Value, fileName, type, location);
+                apps.Add(app);
+            }
+
+            return apps.ToArray();
+        }
+
         private void ExecutePm(String commandLine)
         {
             var response = ExecuteRemoteCommand($"pm {commandLine}");

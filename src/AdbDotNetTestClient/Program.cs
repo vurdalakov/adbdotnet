@@ -111,6 +111,14 @@
 
                 adbClient.UninstallApplication("angel.engmp3tube");
                 Console.WriteLine("Application uninstalled");
+
+                Console.WriteLine();
+
+                var apps = adbClient.GetInstalledApplications();
+                foreach (var app in apps)
+                {
+                    Console.WriteLine($"{app.Name}\t{app.Location}\t{app.Type}\t{app.FileName}");
+                }
             }
             catch (Exception ex)
             {

@@ -184,3 +184,13 @@ Uninstall application but keep data and cache directories:
 ```
 adbClient.UninstallApplication("angel.engmp3tube", true);
 ```
+
+#### List installed applications
+
+```
+var apps = adbClient.GetInstalledApplications();
+foreach (var app in apps)
+{
+    Console.WriteLine($"{app.Name}\t{app.Location}\t{app.Type}\t{app.FileName}");
+}
+```

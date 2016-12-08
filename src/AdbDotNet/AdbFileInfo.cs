@@ -1,7 +1,6 @@
 ﻿namespace Vurdalakov
 {
     using System;
-    using System.IO;
 
     public class AdbFileInfo
     {
